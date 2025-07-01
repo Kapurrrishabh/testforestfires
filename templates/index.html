@@ -1,1 +1,97 @@
-<h1>Welcome to home page</h1>
+{% extends 'base.html' %}
+{% block title %}Data Page{% endblock %}
+
+{% block content %}
+<style>
+    .img-style {
+        display: block;
+        margin: 1rem auto;
+        width: 75%;
+        max-width: 700px;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    p, li {
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+</style>
+
+<div class="container py-4">
+    <h1 class="text-center mb-4">🔥 Algerian Forest Fires Dataset</h1>
+
+    <section class="mb-5">
+        <h3 class="text-primary">📊 Dataset Overview</h3>
+        <p>The dataset includes 244 instances collected from two Algerian regions:</p>
+        <ul>
+            <li><strong>Bejaia</strong> (northeast) and <strong>Sidi Bel-abbes</strong> (northwest)</li>
+            <li>Each region contains 122 instances (total: 244)</li>
+            <li>Time period: <strong>June to September 2012</strong></li>
+            <li>Includes 11 attributes + 1 target output (Fire Weather Index - FWI)</li>
+            <li>Classes: <strong>138 fire</strong> and <strong>106 no-fire</strong> cases</li>
+        </ul>
+    </section>
+
+    <section class="mb-5">
+        <h3 class="text-primary">📌 Attribute Details</h3>
+        <ol>
+            <li>Date (DD/MM/YYYY) — June to September 2012</li>
+            <li>Temperature (°C): 22 to 42</li>
+            <li>Relative Humidity (%): 21 to 90</li>
+            <li>Wind Speed (km/h): 6 to 29</li>
+            <li>Rain (mm): 0 to 16.8</li>
+            <li>FFMC index: 28.6 to 92.5</li>
+            <li>DMC index: 1.1 to 65.9</li>
+            <li>DC index: 7 to 220.4</li>
+            <li>ISI index: 0 to 18.5</li>
+            <li>BUI index: 1.1 to 68</li>
+            <li>FWI index: 0 to 31.1</li>
+            <li>Classes: 0 = Not Fire, 1 = Fire</li>
+        </ol>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="text-success">🔍 Exploratory Data Analysis (EDA)</h2>
+
+        <h4 class="mt-4">📉 Histogram of Each Feature</h4>
+        <img src="{{ url_for('static', filename='images/pairplot.png') }}" alt="Feature Histogram" class="img-style">
+        <h5>Observations:</h5>
+        <ul>
+            <li>Temperature, RH, and Wind Speed are normally distributed</li>
+            <li>Rain, DMC, ISI, DC, and BUI are right-skewed</li>
+            <li>FFMC is left-skewed</li>
+        </ul>
+
+        <h4 class="mt-5">📊 Multicollinearity Heatmap</h4>
+        <img src="{{ url_for('static', filename='images/multicorrelation.png') }}" alt="Multicorrelation" class="img-style">
+        <h5>Observation:</h5>
+        <p>BUI and DC are highly correlated (above 0.85) and were removed to reduce multicollinearity.</p>
+    </section>
+
+    <section class="mb-5">
+        <h3 class="text-danger">🔥 Fire Class Analysis</h3>
+
+        <div class="mb-4">
+            <strong>Overall Fire vs No-Fire</strong><br>
+            <img src="{{ url_for('static', filename='images/fireanalysis.png') }}" alt="Fire Analysis" class="img-style">
+        </div>
+
+        <div class="mb-4">
+            <strong>Monthly Fire Analysis (Bejaia Region)</strong><br>
+            <img src="{{ url_for('static', filename='images/monthwisefire_brjaria.png') }}" alt="Bejaia Monthly Fire" class="img-style">
+        </div>
+
+        <div class="mb-4">
+            <strong>Monthly Fire Analysis (Sidi Bel-abbes Region)</strong><br>
+            <img src="{{ url_for('static', filename='images/monthwisefire_sidi_bel.png') }}" alt="Sidi Bel Monthly Fire" class="img-style">
+        </div>
+
+        <h5>Key Observations:</h5>
+        <ol>
+            <li>Fire cases are more common than no-fire ones</li>
+            <li>July and August see the highest number of fire incidents</li>
+            <li>September shows a significant drop in fires</li>
+        </ol>
+    </section>
+</div>
+{% endblock %}

@@ -1,27 +1,88 @@
-<html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>predict datapoint</title>
-</head>
-<body>
-    <h1>FWI Prediction</h1>
-    <form action=" {{ url_for('predict_datapoint')}}" method="post">
-        <input type="text" name="Temperature" placeholder="Temperature" required="required"></br>
-        <input type="text" name="RH" placeholder="RH" required="required"></br>
-        <input type="text" name="Ws" placeholder="Ws" required="required"></br>
-        <input type="text" name="Rain" placeholder="Rain" required="required"></br>
-        <input type="text" name="FFMC" placeholder="FFMC" required="required"></br>
-        <input type="text" name="DMC" placeholder="DMC" required="required"></br>
-        <input type="text" name="ISI" placeholder="ISI" required="required"></br>
-        <input type="text" name="Classes" placeholder="Classes" required="required"></br>
-        <input type="text" name="Region" placeholder="Region" required="required"></br>
+{# templates/predict.html — nicely styled Bootstrap form #}
+{% extends "base.html" %}
 
-        <button type="submit">Predict</button>
-    </form>
-    <h2>
-        The FWI Pridiction is: {{ results}}
-    </h2>
-</body>
-</html>
+{% block title %}FWI Prediction{% endblock %}
+
+{% block content %}
+<style>
+    /* --- tiny page‑specific tweaks --- */
+    .card    { border-radius: 1rem; }
+    label    { font-weight: 600; }
+    .badge   { letter-spacing: .5px; }
+</style>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h1 class="h3 text-center mb-4">Fire Weather Index (FWI) Predictor</h1>
+
+          <!-- ◾ FORM ◾ -->
+          <form action="{{ url_for('predict_datapoint') }}" method="post"
+                class="needs-validation" novalidate>
+            <div class="row g-3">
+
+              {# Use one loop instead of nine copy‑pasted <div>s #}
+              {% for field, label in [
+                    ('Temperature', 'Temperature (°C)'),
+                    ('RH',          'Relative Humidity (%)'),
+                    ('Ws',          'Wind Speed (km/h)'),
+                    ('Rain',        'Rain (mm)'),
+                    ('FFMC',        'FFMC Index'),
+                    ('DMC',         'DMC Index'),
+                    ('ISI',         'ISI Index'),
+                    ('Classes',     'Class (0 = No Fire, 1 = Fire)'),
+                    ('Region',      'Region (0 = Bejaia, 1 = Sidi Bel‑Abbès)')
+                 ] %}
+              <div class="col-12 col-sm-6">
+                <label for="{{ field }}" class="form-label">{{ label }}</label>
+                <input type="number" step="any"
+                       class="form-control" id="{{ field }}"
+                       name="{{ field }}" placeholder="{{ label }}" required>
+                <div class="invalid-feedback">
+                  Please enter {{ label | lower }}.
+                </div>
+              </div>
+              {% endfor %}
+
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Predict
+              </button>
+            </div>
+          </form>
+
+          <!-- ◾ RESULT ◾ -->
+          {% if results is defined %}
+          <hr class="my-4">
+          <h2 class="text-center">
+            Predicted&nbsp;FWI:&nbsp;
+            <span class="badge bg-success fs-4">
+                {{ results | round(2) }}
+            </span>
+          </h2>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ◾ client‑side Bootstrap validation (optional but nice) ◾ -->
+<script>
+(() => {
+  const forms = document.querySelectorAll('.needs-validation');
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault(); event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+})();
+</script>
+{% endblock %}
